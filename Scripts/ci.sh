@@ -7,7 +7,7 @@ cd tool
 swift run
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
-TAG=0.0.7
+TAG=0.0.6
 
 cp ../Package.swift .
 
@@ -53,7 +53,7 @@ git push
 git push origin --tags
 
 echo "Creating Release..."
-gh release create -p -d $TAG -t "FFmpegKit SPM $TAG" --generate-notes --verify-tag
+gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
 
 echo "Uploading Binaries..."
 
