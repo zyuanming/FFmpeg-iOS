@@ -1,24 +1,55 @@
 #!/bin/sh
 
-git clone -b tool --depth 1 https://github.com/kewlbear/FFmpeg-iOS tool
-cd tool
+# git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
+# cd tool
 
-swift run
+# swift run
 
-TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
+# TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
 
-cp ../Package.swift .
+# cp ../Package.swift .
 
-for f in Frameworks/*.xcframework
+# for f in Frameworks/*.xcframework
+# do
+# 	f=`basename $f .xcframework`
+# 	echo $f...
+# 	rm Package.swift.in
+# 	mv Package.swift Package.swift.in
+# 	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum Frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+# done
+
+# rm ../Package.swift
+# mv Package.swift ..
+
+# echo "::set-output name=tag::$TAG"
+
+
+
+# cd ..
+
+
+echo "Committing Changes..."
+git add -u
+git commit -m "Creating release for $TAG"
+
+echo "Creating Tag..."
+git tag $TAG
+git push
+git push origin --tags
+
+echo "Creating Release..."
+gh release create -p -d $TAG -t "FFmpegKit SPM $TAG" --generate-notes --verify-tag
+
+echo "Uploading Binaries..."
+
+XCFRAMEWORK_DIR=tool/Frameworks
+for f in $(ls "$XCFRAMEWORK_DIR")
 do
-	f=`basename $f .xcframework`
-	echo $f...
-	rm Package.swift.in
-	mv Package.swift Package.swift.in
-	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum Frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+    if [[ $f == *.zip ]]; then
+        gh release upload $TAG "$XCFRAMEWORK_DIR/$f"
+    fi
 done
 
-rm ../Package.swift
-mv Package.swift ..
+gh release edit $TAG --draft=false
 
-echo "::set-output name=tag::$TAG"
+echo "All done!"
