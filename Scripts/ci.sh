@@ -30,6 +30,8 @@ TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
 echo "Install build dependencies..."
 brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wget gettext gh
 
+echo "Getting started with GitHub CLI, run:  gh auth login"
+gh auth login
 
 echo "Committing Changes..."
 git add -u
