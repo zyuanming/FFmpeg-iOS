@@ -27,10 +27,13 @@
 
 # cd ..
 
+echo "Install build dependencies..."
+brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wget gettext gh
+
 
 echo "Committing Changes..."
 git add -u
-git commit -m "Creating release for $TAG"
+git commit -am "Creating release for $TAG"
 
 echo "Creating Tag..."
 git tag $TAG
