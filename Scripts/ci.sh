@@ -5,7 +5,7 @@
 
 # swift run
 
-# TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
+TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
 
 # cp ../Package.swift .
 
