@@ -1,33 +1,56 @@
 #!/bin/sh
 
+echo "Install build dependencies..."
+brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wget gettext gh meson
+
+work_space=$(pwd)
 
 # build old
-rm -rf tool
-git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
-cd tool
-swift run
-cd ..
+# rm -rf tool
+# git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
+# cd tool
+# swift run
+# cd ..
 
 
-rm -rf ffmpeg-kit-main
-git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
-cd ffmpeg-kit-main
-sh ios.sh --enable-dav1d --disable-armv7 --xcframework
+# rm -rf ffmpeg-kit-main
+# git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
+# cd ffmpeg-kit-main
+# sh ios.sh --enable-dav1d --disable-armv7 --xcframework
 
 
 dav1d_arm64=prebuilt/apple-ios-arm64/dav1d/lib/libdav1d.a
 dav1d_arm64_headers=prebuilt/apple-ios-arm64/dav1d/include
 xcodebuild -create-xcframework -library $dav1d_arm64 -headers $dav1d_arm64_headers -output prebuilt/bundle-apple-xcframework-ios/libdav1d.xcframework
 
-cd ../tool
+
+cd $work_space/tool
+mkdir tmp_output_frameworks
+cd $work_space/ffmpeg-kit-main/prebuilt/bundle-apple-xcframework-ios
+
+for f in ./*.xcframework
+do
+	f=`basename $f .xcframework`
+
+  # 检查文件名是否为ffmpegkit.framework
+  if [ "$f" == "ffmpegkit" ]; then
+      # 如果是ffmpegkit.framework，则跳过
+      continue
+  fi
+  zip -r "$f.zip" $f.xcframework
+  cp $f.xcframework $work_space/tool/tmp_output_frameworks
+done
 
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
 TAG=0.0.6
 
+cd $work_space/tool
+
 cp ../Package.swift .
 
-for f in prebuilt/bundle-apple-xcframework-ios/*.xcframework
+
+for f in ../ffmpeg-kit-main/prebuilt/bundle-apple-xcframework-ios/*.xcframework
 do
 	f=`basename $f .xcframework`
 
@@ -39,7 +62,7 @@ do
 	echo $f...
 	rm Package.swift.in
 	mv Package.swift Package.swift.in
-	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum Frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
 done
 
 rm ../Package.swift
@@ -47,12 +70,7 @@ mv Package.swift ..
 
 echo "::set-output name=tag::$TAG"
 
-
-
 cd ..
-
-echo "Install build dependencies..."
-brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wget gettext gh
 
 echo "Check if the user is logged in to GitHub CLI"
 if gh auth status 2>&1 | grep -q 'You are not logged in to any GitHub hosts'; then
@@ -63,21 +81,21 @@ else
   echo "You are already logged in to GitHub CLI."
 fi
 
-gh repo set-default zyuanming/FFmpeg-iOS
+# gh repo set-default zyuanming/FFmpeg-iOS
 
-echo "Committing Changes..."
-git add -u
-git commit -am "Creating release for $TAG"
+# echo "Committing Changes..."
+# git add -u
+# git commit -am "Creating release for $TAG"
 
-echo "Creating Tag..."
-git tag $TAG
-git push
-git push origin --tags
+# echo "Creating Tag..."
+# git tag $TAG
+# git push
+# git push origin --tags
 
-echo "Creating Release..."
-gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
+# echo "Creating Release..."
+# gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
 
-echo "Uploading Binaries..."
+# echo "Uploading Binaries..."
 
 # XCFRAMEWORK_DIR=tool/Frameworks
 # for f in $(ls "$XCFRAMEWORK_DIR")
