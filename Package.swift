@@ -9,7 +9,7 @@ let package = Package(
         .library(
             name: "FFmpeg-iOS",
             targets: [
-                "avcodec", "avutil", "avformat", "avfilter", "avdevice", "swscale", "swresample",
+                "avcodec", "avutil", "avformat", "avfilter", "avdevice", "swscale", "swresample", "dav1d"
                 "fftools", "Dummy",
             ]),
     ],
@@ -22,12 +22,13 @@ let package = Package(
         .binaryTarget(name: "avformat", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/avformat.zip", checksum: "978c1644da234b7302fef500fb63207fc0dbb3670fa4e2b0f16689c441c39e9c"),
         .binaryTarget(name: "avfilter", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/avfilter.zip", checksum: "f42199e3429c6a126523d0a1316e1b85b75dce7fa8f8874d269f6992f2b401d5"),
         .binaryTarget(name: "avdevice", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/avdevice.zip", checksum: "a0706192d120449d51d74f335426fb7cbebc2e41a20b57b48e061a0aab58428e"),
-        .binaryTarget(name: "swscale", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/swscale.zip", checksum: "6e8f9f5abe88ed4a26e6f474363650a9bae311f7a98bc54b636e4adfd8aa64fc"),
+        .binaryTarget(name: "swscale", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.7/swscale.zip", checksum: "9ec003015b6924e80edf6f02d66abc422c40f372e233eb017dbd7e73a132208f"),
         .binaryTarget(name: "swresample", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/swresample.zip", checksum: "daf7fa37a24ac20009956893c43d34142050c1001ff27dd975f9116660e5d5da"),
+        .binaryTarget(name: "dav1d", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/dav1d.zip", checksum: "daf7fa37a24ac20009956893c43d34142050c1001ff27dd975f9116660e5d5da"),
         .binaryTarget(name: "fftools", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/fftools.zip", checksum: "2cbe76b57a8288ef89d88363d4980bf5ed6d545dfa5a2bb1c974abf2a931bada"),
         .target(name: "Dummy", dependencies: [
             "fftools",
-            "avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample",
+            "avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample", "dav1d"
             "FFmpeg-iOS-Support",
         ]),
         .testTarget(name: "FFmpeg-iOSTests",
