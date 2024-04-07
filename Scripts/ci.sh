@@ -9,7 +9,7 @@ work_space=$(pwd)
 rm -rf tool
 git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
 cd tool
-swift run
+swift run --enable-libx264
 cd ..
 
 
