@@ -9,7 +9,7 @@ let package = Package(
         .library(
             name: "FFmpeg-iOS",
             targets: [
-                "avcodec", "avutil", "avformat", "avfilter", "avdevice", "swscale", "swresample", "dav1d"
+                "avcodec", "avutil", "avformat", "avfilter", "avdevice", "swscale", "swresample", "dav1d",
                 "fftools", "Dummy",
             ]),
     ],
@@ -28,7 +28,7 @@ let package = Package(
         .binaryTarget(name: "fftools", url: "https://github.com/zyuanming/FFmpeg-iOS/releases/download/0.0.6/fftools.zip", checksum: "2cbe76b57a8288ef89d88363d4980bf5ed6d545dfa5a2bb1c974abf2a931bada"),
         .target(name: "Dummy", dependencies: [
             "fftools",
-            "avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample", "dav1d"
+            "avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample", "dav1d",
             "FFmpeg-iOS-Support",
         ]),
         .testTarget(name: "FFmpeg-iOSTests",
