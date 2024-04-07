@@ -7,7 +7,7 @@ cd tool
 swift run
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
-TAG=0.0.6
+TAG=0.0.9
 
 cp ../Package.swift .
 
