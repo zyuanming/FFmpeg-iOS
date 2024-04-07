@@ -5,22 +5,22 @@ brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wg
 
 work_space=$(pwd)
 
-build old
-rm -rf tool
-git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
-cd tool
-swift run
-cd ..
+# build old
+# rm -rf tool
+# git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
+# cd tool
+# swift run
+# cd ..
 
 
-rm -rf ffmpeg-kit-main
-git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
-cd ffmpeg-kit-main
-sh ios.sh --enable-dav1d --disable-armv7 --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst --disable-arm64e --xcframework
+# rm -rf ffmpeg-kit-main
+# git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
+# cd ffmpeg-kit-main
+# sh ios.sh --enable-dav1d --disable-armv7 --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst --disable-arm64e --xcframework
 
-dav1d_arm64=prebuilt/apple-ios-arm64/dav1d/lib/libdav1d.a
-dav1d_arm64_headers=prebuilt/apple-ios-arm64/dav1d/include
-xcodebuild -create-xcframework -library $dav1d_arm64 -headers $dav1d_arm64_headers -output prebuilt/bundle-apple-xcframework-ios/libdav1d.xcframework
+# dav1d_arm64=prebuilt/apple-ios-arm64/dav1d/lib/libdav1d.a
+# dav1d_arm64_headers=prebuilt/apple-ios-arm64/dav1d/include
+# xcodebuild -create-xcframework -library $dav1d_arm64 -headers $dav1d_arm64_headers -output prebuilt/bundle-apple-xcframework-ios/libdav1d.xcframework
 
 
 cd $work_space/tool
@@ -69,7 +69,7 @@ do
   fi
 	rm Package.swift.in
 	mv Package.swift Package.swift.in
-	sed "s#/download/[^/]*/$lib_string\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
 done
 
 rm ../Package.swift
