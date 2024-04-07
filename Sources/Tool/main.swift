@@ -247,6 +247,8 @@ extension Tool {
                         "--disable-sdl2",
                         "--disable-libxcb",
                         "--target-os=darwin",
+                        "--enable-demuxer=matroska",
+                        "--enable-muxer=matroska",
                         "--arch=\(arch)",
                         "--cc=\(cc)",
                         "--as=\(`as`)",
