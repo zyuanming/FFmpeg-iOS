@@ -148,6 +148,8 @@ extension Tool {
         
         mutating func run() throws {
             try DepCommand().run()
+            enableLibx264 = true
+            enableLibmp3lame = true
 
             if enableLibfdkAac {
                 try build(lib: "fdk-aac", sourceDirectory: "./fdk-aac")
