@@ -125,6 +125,9 @@ extension Tool {
         
         @Flag(help: "Create fat library instead of .xcframework")
         var disableXcframework = false
+
+        @Flag(help: "enable dav1d")
+        var enableDav1d = false
         
         @Flag
         var disableModule = false
@@ -162,6 +165,12 @@ extension Tool {
                 try build(lib: "x264", sourceDirectory: "./x264")
                 
                 configureOptions.extraOptions += ["--enable-libx264", "--enable-gpl",]
+            }
+
+            if enableDav1d {
+                try build(lib: "dav1d", sourceDirectory: "./dav1d")
+                
+                configureOptions.extraOptions += ["--enable-libdav1d",]
             }
 
             try build(lib: sourceOptions.lib, sourceDirectory: sourceOptions.sourceURL.path)
@@ -277,6 +286,12 @@ extension Tool {
                     let lameInstall = $0.installPrefix.replacingOccurrences(of: "/FFmpeg/", with: "/lame/")
                     $0.cFlags.append(" -I\(lameInstall)/include -L\(lameInstall)/lib")
                 }
+
+                if configureOptions.extraOptions.contains("--enable-libdav1d") {
+                    let dav1dInstall = $0.installPrefix.replacingOccurrences(of: "/FFmpeg/", with: "/dav1d/")
+                    $0.cFlags.append(" -I\(dav1dInstall)/include -L\(dav1dInstall)/lib")
+                }
+
                 return $0.options
                     + configureOptions.extraOptions
                     + platformOptions
