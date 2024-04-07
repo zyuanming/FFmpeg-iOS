@@ -6,11 +6,11 @@ brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wg
 work_space=$(pwd)
 
 # build old
-# rm -rf tool
-# git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
-# cd tool
-# swift run
-# cd ..
+rm -rf tool
+git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
+cd tool
+swift run
+cd ..
 
 
 # rm -rf ffmpeg-kit-main
