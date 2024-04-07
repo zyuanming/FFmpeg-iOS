@@ -148,8 +148,7 @@ extension Tool {
         
         mutating func run() throws {
             try DepCommand().run()
-            enableLibx264 = true
-            enableLibmp3lame = true
+            enableDav1d = true
 
             if enableLibfdkAac {
                 try build(lib: "fdk-aac", sourceDirectory: "./fdk-aac")
@@ -170,7 +169,7 @@ extension Tool {
             }
 
             if enableDav1d {
-                try build(lib: "dav1d", sourceDirectory: "./dav1d")
+                // try build(lib: "dav1d", sourceDirectory: "./dav1d")
                 
                 configureOptions.extraOptions += ["--enable-libdav1d",]
             }
@@ -203,7 +202,8 @@ extension Tool {
             case "x264":
                 try buildX264(sourceDirectory: sourceDirectory)
             default:
-                throw ExitCode.failure
+                // throw ExitCode.failure
+                return
             }
             
             if !disableXcframework {
