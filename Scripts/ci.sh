@@ -27,19 +27,6 @@ cd $work_space/tool
 mkdir tmp_output_frameworks
 cd $work_space/ffmpeg-kit-main/prebuilt/bundle-apple-xcframework-ios
 
-for f in ./*.xcframework
-do
-	f=`basename $f .xcframework`
-
-  # 检查文件名是否为ffmpegkit.framework
-  if [ "$f" == "ffmpegkit" ]; then
-      # 如果是ffmpegkit.framework，则跳过
-      continue
-  fi
-  zip -rq "$f.zip" $f.xcframework
-  cp $f.zip $work_space/tool/tmp_output_frameworks
-done
-
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
 TAG=0.0.8
@@ -48,28 +35,13 @@ cd $work_space/tool
 
 cp ../Package.swift .
 
-
-for f in ../ffmpeg-kit-main/prebuilt/bundle-apple-xcframework-ios/*.xcframework
+for f in Frameworks/*.xcframework
 do
 	f=`basename $f .xcframework`
-
-  # 检查文件名是否为ffmpegkit.framework
-  if [ "$f" == "ffmpegkit" ]; then
-      # 如果是ffmpegkit.framework，则跳过
-      continue
-  fi
 	echo $f...
-  # 检查字符串是否以"lib"开头
-  if [[ $f == lib* ]]; then
-      # 使用参数扩展去除前缀"lib"
-      lib_string=${f#lib}
-      echo "Modified string: $lib_string"
-  else
-      echo "String does not start with 'lib'."
-  fi
 	rm Package.swift.in
 	mv Package.swift Package.swift.in
-	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum Frameworks/$f.zip`\"#" Package.swift.in > Package.swift
 done
 
 rm ../Package.swift
@@ -104,7 +76,7 @@ gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
 
 echo "Uploading Binaries..."
 
-XCFRAMEWORK_DIR=tool/tmp_output_frameworks
+XCFRAMEWORK_DIR=tool/Frameworks
 for f in $(ls "$XCFRAMEWORK_DIR")
 do
     if [[ $f == *.zip ]]; then
