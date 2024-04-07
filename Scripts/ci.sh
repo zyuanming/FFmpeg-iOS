@@ -5,19 +5,18 @@ brew install autoconf automake libtool pkg-config curl git doxygen nasm bison wg
 
 work_space=$(pwd)
 
-# build old
-# rm -rf tool
-# git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
-# cd tool
-# swift run
-# cd ..
+build old
+rm -rf tool
+git clone -b tool --depth 1 https://github.com/zyuanming/FFmpeg-iOS tool
+cd tool
+swift run
+cd ..
 
 
-# rm -rf ffmpeg-kit-main
-# git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
-# cd ffmpeg-kit-main
-# sh ios.sh --enable-dav1d --disable-armv7 --xcframework
-
+rm -rf ffmpeg-kit-main
+git clone -b main --depth 1 git@github.com:arthenica/ffmpeg-kit.git ffmpeg-kit-main
+cd ffmpeg-kit-main
+sh ios.sh --enable-dav1d --disable-armv7 --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst --disable-arm64e --xcframework
 
 dav1d_arm64=prebuilt/apple-ios-arm64/dav1d/lib/libdav1d.a
 dav1d_arm64_headers=prebuilt/apple-ios-arm64/dav1d/include
@@ -37,13 +36,13 @@ do
       # 如果是ffmpegkit.framework，则跳过
       continue
   fi
-  zip -r "$f.zip" $f.xcframework
-  cp $f.xcframework $work_space/tool/tmp_output_frameworks
+  zip -rq "$f.zip" $f.xcframework
+  cp $f.zip $work_space/tool/tmp_output_frameworks
 done
 
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
-TAG=0.0.6
+TAG=0.0.7
 
 cd $work_space/tool
 
@@ -60,9 +59,17 @@ do
       continue
   fi
 	echo $f...
+  # 检查字符串是否以"lib"开头
+  if [[ $f == lib* ]]; then
+      # 使用参数扩展去除前缀"lib"
+      lib_string=${f#lib}
+      echo "Modified string: $lib_string"
+  else
+      echo "String does not start with 'lib'."
+  fi
 	rm Package.swift.in
 	mv Package.swift Package.swift.in
-	sed "s#/download/[^/]*/$f\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
+	sed "s#/download/[^/]*/$lib_string\.zip[^)]*#/download/$TAG/$f.zip\", checksum: \"`swift package compute-checksum tmp_output_frameworks/$f.zip`\"#" Package.swift.in > Package.swift
 done
 
 rm ../Package.swift
@@ -81,30 +88,30 @@ else
   echo "You are already logged in to GitHub CLI."
 fi
 
-# gh repo set-default zyuanming/FFmpeg-iOS
+gh repo set-default zyuanming/FFmpeg-iOS
 
-# echo "Committing Changes..."
-# git add -u
-# git commit -am "Creating release for $TAG"
+echo "Committing Changes..."
+git add -u
+git commit -am "Creating release for $TAG"
 
-# echo "Creating Tag..."
-# git tag $TAG
-# git push
-# git push origin --tags
+echo "Creating Tag..."
+git tag $TAG
+git push
+git push origin --tags
 
-# echo "Creating Release..."
-# gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
+echo "Creating Release..."
+gh release create -d $TAG -t "FFmpeg-iOS $TAG" --generate-notes --verify-tag
 
-# echo "Uploading Binaries..."
+echo "Uploading Binaries..."
 
-# XCFRAMEWORK_DIR=tool/Frameworks
-# for f in $(ls "$XCFRAMEWORK_DIR")
-# do
-#     if [[ $f == *.zip ]]; then
-#         gh release upload $TAG "$XCFRAMEWORK_DIR/$f"
-#     fi
-# done
+XCFRAMEWORK_DIR=tool/tmp_output_frameworks
+for f in $(ls "$XCFRAMEWORK_DIR")
+do
+    if [[ $f == *.zip ]]; then
+        gh release upload $TAG "$XCFRAMEWORK_DIR/$f"
+    fi
+done
 
-# gh release edit $TAG --draft=false
+gh release edit $TAG --draft=false
 
 echo "All done!"
