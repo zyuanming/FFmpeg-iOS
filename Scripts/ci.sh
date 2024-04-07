@@ -42,7 +42,7 @@ done
 
 
 # TAG=v0.0.6-`date +b%Y%m%d-%H%M%S`
-TAG=0.0.7
+TAG=0.0.8
 
 cd $work_space/tool
 
