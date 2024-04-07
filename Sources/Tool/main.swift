@@ -118,10 +118,10 @@ extension Tool {
         var enableLibfdkAac = false
         
         @Flag(help: "enable H.264 encoding via x264")
-        var enableLibx264 = false
+        var enableLibx264 = true
         
         @Flag(help: "enable MP3 encoding via libmp3lame")
-        var enableLibmp3lame = false
+        var enableLibmp3lame = true
         
         @Flag(help: "Create fat library instead of .xcframework")
         var disableXcframework = false
