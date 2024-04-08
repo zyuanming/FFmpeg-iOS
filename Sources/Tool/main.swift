@@ -249,6 +249,7 @@ extension Tool {
                         "--target-os=darwin",
                         "--enable-demuxer=matroska",
                         "--enable-muxer=matroska",
+                        "--enable-decoder=av1",
                         "--arch=\(arch)",
                         "--cc=\(cc)",
                         "--as=\(`as`)",
