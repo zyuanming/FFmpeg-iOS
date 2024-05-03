@@ -250,7 +250,6 @@ extension Tool {
                         "--enable-demuxer=matroska",
                         "--enable-muxer=matroska",
                         "--enable-decoder=av1",
-                        "--enable-libdav1d",
                         "--arch=\(arch)",
                         "--cc=\(cc)",
                         "--as=\(`as`)",
